@@ -304,7 +304,7 @@ class PassEvent:
                 start_player=self.last_player_with_ball,
                 end_player=self.closest_player,
             )
-
+            
             if valid_pass:
                 # Generate new pass
                 team = self.closest_player.team

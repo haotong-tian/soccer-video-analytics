@@ -19,6 +19,9 @@ from soccer import Match, Player, Team
 from soccer.draw import AbsolutePath
 from soccer.pass_event import Pass
 
+import warnings
+warnings.simplefilter(action='ignore')
+
 parser = argparse.ArgumentParser()
 parser.add_argument(
     "--video",
@@ -147,6 +150,13 @@ for i, frame in enumerate(video):
 
         if ball:
             frame = ball.draw(frame)
+            # H.T. Edit: If a ball is detected, find the closet player and put a pointer on him
+            distances_to_ball = np.array([p.distance_to_ball(ball) for p in players])
+            distances_to_ball[distances_to_ball == None] = -1
+            closest_idx = np.argmin(distances_to_ball)
+            if distances_to_ball[closest_idx] > -1:
+                closest_player = players[closest_idx]
+                closest_player.draw_pointer(frame)
 
     if args.passes:
         pass_list = match.passes

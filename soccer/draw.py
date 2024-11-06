@@ -399,7 +399,9 @@ class Draw:
         if font is None:
             font = PIL.ImageFont.truetype("fonts/Gidole-Regular.ttf", size=24)
 
-        w, h = draw.textsize(text, font=font)
+        # w, h = draw.textsize(text, font=font)
+        w = draw.textlength(text, font=font)
+        h = 1
         text_origin = (
             origin[0] + width / 2 - w / 2,
             origin[1] + height / 2 - h / 2,

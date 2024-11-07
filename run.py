@@ -95,7 +95,6 @@ possession_background = match.get_possession_background()
 passes_background = match.get_passes_background()
 
 for i, frame in enumerate(video):
-
     # Get Detections
     players_detections = get_player_detections(player_detector, frame)
     ball_detections = get_ball_detections(ball_detector, frame)
@@ -170,6 +169,7 @@ for i, frame in enumerate(video):
         )
 
     frame = np.array(frame)
+    new_frame = match.change_frame(players, ball, frame)
 
     # Write video
-    video.write(frame)
+    video.write(new_frame)

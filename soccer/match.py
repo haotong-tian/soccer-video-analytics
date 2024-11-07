@@ -91,6 +91,54 @@ class Match:
 
         self.pass_event.process_pass()
 
+    def change_frame(self, players: List[Player], ball: Ball, frame):
+        """
+        Reframe the match to feature the players and the ball
+
+        Parameters
+        ----------
+        players : List[Player]
+            List of players
+        ball : Ball
+            Ball
+        """
+        xmax = -1
+        xmin = 100000
+        ymax = -1
+        ymin = 100000
+
+        for player in players:
+            feet = player.feet
+            for foot in feet:
+                if foot[0] < xmin: xmin = foot[0]
+                if foot[0] > xmax: xmax = foot[0]
+                if foot[1] < ymin: ymin = foot[1]
+                if foot[1] > ymax: ymax = foot[1]
+
+        if ball.center is not None: 
+            ball_pos = ball.center
+            if ball_pos[0] < xmin: xmin = foot[0]
+            if ball_pos[0] > xmax: xmax = foot[0]
+            if ball_pos[1] < ymin: ymin = foot[1]
+            if ball_pos[1] > ymax: ymax = foot[1]
+
+        # Frame size: (720, 1280)
+        x_center = int((xmax + xmin) / 2)
+        y_center = int((ymax + ymin) / 2)
+        x_range = xmax - xmin
+        y_range = ymax - ymin
+        x_spread = int(max(x_range, y_range * 1280 / 720))
+        y_spread = int(max(y_range, x_range * 720 / 1280))
+        # print(x_center, y_center, x_spread, y_spread)
+        # print(y_center - int(y_spread/2), y_center + int(y_spread/2), x_center - int(x_spread/2), x_center + int(x_spread/2))
+
+        zoomed_frame = frame[x_center - int(x_spread/2) : x_center + int(x_spread/2), y_center - int(y_spread/2) : y_center + int(y_spread/2)]
+        # print(frame.shape)
+        for channel in range(3):
+            frame[:, :, channel] = cv2.resize(zoomed_frame[:, :, channel], (1280, 720))
+        return frame
+
+
     def change_team(self, team: Team):
         """
 
